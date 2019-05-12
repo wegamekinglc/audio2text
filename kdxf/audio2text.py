@@ -55,7 +55,7 @@ aue = "raw"
 #  音频格式转换可参考（讯飞开放平台语音识别音频文件格式说明）：https://doc.xfyun.cn/rest_api/%E9%9F%B3%E9%A2%91%E6%A0%BC%E5%BC%8F%E8%AF%
 engineType = "sms16k"
 # 音频文件地址,示例音频请在听写接口文档底部下载
-audioFilePath = r"./result.pcm"
+audioFilePath = r"data/test3.pcm"
 import datetime as dt
 
 data = getBody(audioFilePath)
