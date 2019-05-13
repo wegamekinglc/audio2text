@@ -1,5 +1,5 @@
 FROM fnndsc/ubuntu-python3
-RUN apt-get install software-properties-common
+RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:jonathonf/ffmpeg-4
 RUN apt-get update \
   && apt-get install -y ffmpeg
