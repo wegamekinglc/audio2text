@@ -90,7 +90,7 @@ def fetch_token():
 """  TOKEN end """
 
 
-def fetch_sst(audio_file):
+def fetch_stt_baidu(audio_file):
     token = fetch_token()
     with open(audio_file, 'rb') as speech_file:
         speech_data = speech_file.read()
