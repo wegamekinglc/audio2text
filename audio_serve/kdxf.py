@@ -11,6 +11,7 @@ import requests
 import time
 import hashlib
 import base64
+import json
 # 听写的webapi接口地址
 URL = "http://api.xfyun.cn/v1/service/v1/iat"
 # 应用APPID（必须为webapi类型应用，并开通语音听写服务，参考帖子如何创建一个webapi应用：http://bbs.xfyun.cn/forum.php?mod=viewthread&tid=36481）
@@ -63,4 +64,4 @@ def fetch_stt_kdxf(audio_file):
     data = getBody(audio_file)
     headers = getHeader(aue, engineType)
     r = requests.post(URL, headers=headers, data=data)
-    return r.json()
+    return json.loads(r.content.decode('utf-8'))
