@@ -18,6 +18,14 @@ app.config.update(RESTFUL_JSON=dict(ensure_ascii=False))
 api = Api(app)
 
 
+class AudioUpload(Resource):
+
+    def post(self):
+        data = request.files['mp3']
+        data.save('t.mp3')
+        return make_response(jsonify(dict(code=1, message="file upload succeeded", data=None)), 200)
+
+
 class Audio2Text(Resource):
 
     def post(self):
@@ -28,9 +36,10 @@ class Audio2Text(Resource):
         ffmpeg.run(stream, overwrite_output=True)
 
         res = fetch_sst('t.pcm')['result'][0]
-        return make_response(jsonify(dict(code=1, message="file upload succeeded", data={'query': res})), 200)
+        return make_response(jsonify(dict(code=1, message="speech to sentence succeeded", data={'query': res})), 200)
 
 
+api.add_resource(AudioUpload, '/audioupload')
 api.add_resource(Audio2Text, '/audio2text')
 
 
