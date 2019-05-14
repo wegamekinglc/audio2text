@@ -63,4 +63,4 @@ def fetch_stt_kdxf(audio_file):
     data = getBody(audio_file)
     headers = getHeader(aue, engineType)
     r = requests.post(URL, headers=headers, data=data)
-    return r.content.decode('utf-8')
+    return r.json()

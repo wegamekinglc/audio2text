@@ -28,7 +28,7 @@ API_KEY = 'zyZAIS9gQck9xycaGLHGkins'
 SECRET_KEY = '7Q9rSvApvoAGtMzjUFQetxFBwokSy0Nt'
 
 # 需要识别的文件
-AUDIO_FILE = 'data/test3.pcm'  # 只支持 pcm/wav/amr
+AUDIO_FILE = 'data/t.pcm'  # 只支持 pcm/wav/amr
 # 文件格式
 FORMAT = AUDIO_FILE[-3:]  # 文件后缀只支持 pcm/wav/amr
 
@@ -90,6 +90,41 @@ def fetch_token():
         raise DemoError('MAYBE API_KEY or SECRET_KEY not correct: access_token or scope not found in token response')
 
 """  TOKEN end """
+
+def fetch_sst(audio_file):
+    token = fetch_token()
+    speech_data = []
+    with open(audio_file, 'rb') as speech_file:
+        speech_data = speech_file.read()
+
+    length = len(speech_data)
+    if length == 0:
+        raise DemoError('file %s length read 0 bytes' % AUDIO_FILE)
+    speech = base64.b64encode(speech_data)
+    speech = str(speech, 'utf-8')
+    params = {'dev_pid': DEV_PID,
+              'format': FORMAT,
+              'rate': RATE,
+              'token': token,
+              'cuid': CUID,
+              'channel': 1,
+              'speech': speech,
+              'len': length
+              }
+    post_data = json.dumps(params, sort_keys=False)
+    # print post_data
+    start = dt.datetime.now()
+    req = Request(ASR_URL, post_data.encode('utf-8'))
+    req.add_header('Content-Type', 'application/json')
+    try:
+        f = urlopen(req)
+        result_str = f.read()
+    except URLError as err:
+        result_str = err.read()
+
+    result_str = str(result_str, 'utf-8')
+    return result_str
+
 
 if __name__ == '__main__':
     import datetime as dt
