@@ -46,7 +46,7 @@ class Audio2Text(Resource):
         if vendor == 'baidu':
             res = fetch_stt_baidu('t.pcm')['result'][0]
         elif vendor == 'kdxf':
-            res = fetch_stt_kdxf('t.pcm')
+            res = fetch_stt_kdxf('t.pcm')['data']
         else:
             raise ValueError('vendor is no recognized')
         return make_response(jsonify(dict(code=1, message="speech to sentence succeeded", data={'query': res})), 200)
