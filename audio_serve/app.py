@@ -10,6 +10,8 @@ from io import BytesIO
 import base64
 from flask import Flask
 from flask import request
+from flask import jsonify
+from flask import make_response
 from flask_restful import Api, Resource
 from flask_restful import reqparse
 
@@ -21,12 +23,8 @@ api = Api(app)
 class Audio2Text(Resource):
 
     def post(self):
-        # parser = reqparse.RequestParser()
-        # parser.add_argument('mp3', type=werkzeug.FileStorage, location='files')
-        # args = parser.parse_args()
-        # data = args['mp3'].stream
         data = request.files['mp3']
-        # data.save('my_mp3.mp3')
+        return make_response(jsonify(dict(code=1, message="file upload succeeded", data=None)), 200)
 
 api.add_resource(Audio2Text, '/audio2text')
 
