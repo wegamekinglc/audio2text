@@ -12,7 +12,8 @@ from flask import jsonify
 from flask import make_response
 from flask_restful import reqparse
 from flask_restful import Api, Resource
-from audio_serve.baidu import fetch_stt_baidu
+from audio_serve.baidu import fetch_stt_chinese_baidu
+from audio_serve.baidu import fetch_stt_english_baidu
 from audio_serve.kdxf import fetch_stt_kdxf
 
 
@@ -34,8 +35,10 @@ class Audio2Text(Resource):
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('vendor', type=str, help='vendor of stt', default='baidu')
+        parser.add_argument('language', type=str, help='language to stt', default='chinese')
         args = parser.parse_args()
         vendor = args['vendor']
+        language = args['language']
 
         data = request.files['mp3']
         data.save('t.mp3')
@@ -44,7 +47,13 @@ class Audio2Text(Resource):
         ffmpeg.run(stream, overwrite_output=True)
 
         if vendor == 'baidu':
-            res = fetch_stt_baidu('t.pcm')['result'][0]
+            if language == 'chinese':
+                res = fetch_stt_chinese_baidu('t.pcm')['result'][0]
+            elif language == 'english':
+                res = fetch_stt_english_baidu('t.pcm')['result'][0]
+            else:
+                raise ValueError('language is not recognized')
+
         elif vendor == 'kdxf':
             res = fetch_stt_kdxf('t.pcm')['data']
         else:

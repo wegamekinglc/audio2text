@@ -3,6 +3,7 @@
 import json
 import base64
 
+import requests
 from urllib.request import urlopen
 from urllib.request import Request
 from urllib.error import URLError
@@ -72,8 +73,9 @@ def fetch_token(scope):
 def fetch_stt_chinese_baidu(audio_file):
     dev_pid = 80001
     asr_url = 'https://vop.baidu.com/pro_api'
+    scope = 'brain_enhanced_asr'
 
-    token = fetch_token()
+    token = fetch_token(scope)
     with open(audio_file, 'rb') as speech_file:
         speech_data = speech_file.read()
 
@@ -91,17 +93,37 @@ def fetch_stt_chinese_baidu(audio_file):
               'speech': speech,
               'len': length
               }
-    post_data = json.dumps(params, sort_keys=False)
-    req = Request(asr_url, post_data.encode('utf-8'))
-    req.add_header('Content-Type', 'application/json')
-    try:
-        f = urlopen(req)
-        result_str = f.read()
-    except URLError as err:
-        result_str = err.read()
 
-    result_str = result_str.decode('utf8')
-    return json.loads(result_str)
+    resp = requests.post(asr_url, json=params)
+    return resp.json()
+
+
+def fetch_stt_english_baidu(audio_file):
+    dev_pid = 1737
+    asr_url = 'http://vop.baidu.com/server_api'
+    scope = 'audio_voice_assistant_get'
+
+    token = fetch_token(scope)
+    with open(audio_file, 'rb') as speech_file:
+        speech_data = speech_file.read()
+
+    length = len(speech_data)
+    if length == 0:
+        raise DemoError('file %s length read 0 bytes' % audio_file)
+    speech = base64.b64encode(speech_data)
+    speech = str(speech, 'utf-8')
+    params = {'dev_pid': dev_pid,
+              'format': FORMAT,
+              'rate': RATE,
+              'token': token,
+              'cuid': CUID,
+              'channel': 1,
+              'speech': speech,
+              'len': length
+              }
+
+    resp = requests.post(asr_url, json=params)
+    return resp.json()
 
 
 if __name__ == '__main__':
