@@ -1,39 +1,18 @@
 # coding=utf-8
 
-import sys
 import json
 import base64
-import time
 
-IS_PY3 = sys.version_info.major == 3
+from urllib.request import urlopen
+from urllib.request import Request
+from urllib.error import URLError
+from urllib.parse import urlencode
 
-if IS_PY3:
-    from urllib.request import urlopen
-    from urllib.request import Request
-    from urllib.error import URLError
-    from urllib.parse import urlencode
-
-    timer = time.perf_counter
-else:
-    from urllib2 import urlopen
-    from urllib2 import Request
-    from urllib2 import URLError
-    from urllib import urlencode
-
-    if sys.platform == "win32":
-        timer = time.clock
-    else:
-        # On most other platforms the best timer is time.time()
-        timer = time.time
 
 API_KEY = 'zyZAIS9gQck9xycaGLHGkins'
 SECRET_KEY = '7Q9rSvApvoAGtMzjUFQetxFBwokSy0Nt'
-
-# 文件格式
 FORMAT = 'pcm'  # 文件后缀只支持 pcm/wav/amr
-
 CUID = '123456PYTHON'
-# 采样率
 RATE = 16000  # 固定值
 
 # 免费版
@@ -44,9 +23,9 @@ RATE = 16000  # 固定值
 
 # 收费极速版 打开注释的话请填写自己申请的appkey appSecret ，并在网页中开通极速版
 
-DEV_PID = 80001
-ASR_URL = 'https://vop.baidu.com/pro_api'
-SCOPE = 'brain_enhanced_asr'  # 有此scope表示有收费极速版能力，没有请在网页里开通极速版
+# DEV_PID = 80001
+# ASR_URL = 'https://vop.baidu.com/pro_api'
+# SCOPE = 'brain_enhanced_asr'  # 有此scope表示有收费极速版能力，没有请在网页里开通极速版
 
 
 # 忽略scope检查，非常旧的应用可能没有
@@ -61,7 +40,7 @@ class DemoError(Exception):
 TOKEN_URL = 'http://openapi.baidu.com/oauth/2.0/token'
 
 
-def fetch_token():
+def fetch_token(scope):
     params = {'grant_type': 'client_credentials',
               'client_id': API_KEY,
               'client_secret': SECRET_KEY}
@@ -78,8 +57,8 @@ def fetch_token():
 
     result = json.loads(result_str)
     if 'access_token' in result.keys() and 'scope' in result.keys():
-        print(SCOPE)
-        if SCOPE and (SCOPE not in result['scope'].split(' ')):  # SCOPE = False 忽略检查
+        print(scope)
+        if scope and (scope not in result['scope'].split(' ')):  # SCOPE = False 忽略检查
             raise DemoError('scope is not correct')
         print('SUCCESS WITH TOKEN: %s  EXPIRES IN SECONDS: %s' % (result['access_token'], result['expires_in']))
         return result['access_token']
@@ -90,7 +69,10 @@ def fetch_token():
 """  TOKEN end """
 
 
-def fetch_stt_baidu(audio_file):
+def fetch_stt_chinese_baidu(audio_file):
+    dev_pid = 80001
+    asr_url = 'https://vop.baidu.com/pro_api'
+
     token = fetch_token()
     with open(audio_file, 'rb') as speech_file:
         speech_data = speech_file.read()
@@ -100,7 +82,7 @@ def fetch_stt_baidu(audio_file):
         raise DemoError('file %s length read 0 bytes' % audio_file)
     speech = base64.b64encode(speech_data)
     speech = str(speech, 'utf-8')
-    params = {'dev_pid': DEV_PID,
+    params = {'dev_pid': dev_pid,
               'format': FORMAT,
               'rate': RATE,
               'token': token,
@@ -110,7 +92,7 @@ def fetch_stt_baidu(audio_file):
               'len': length
               }
     post_data = json.dumps(params, sort_keys=False)
-    req = Request(ASR_URL, post_data.encode('utf-8'))
+    req = Request(asr_url, post_data.encode('utf-8'))
     req.add_header('Content-Type', 'application/json')
     try:
         f = urlopen(req)
