@@ -12,12 +12,14 @@ if IS_PY3:
     from urllib.request import Request
     from urllib.error import URLError
     from urllib.parse import urlencode
+
     timer = time.perf_counter
 else:
     from urllib2 import urlopen
     from urllib2 import Request
     from urllib2 import URLError
     from urllib import urlencode
+
     if sys.platform == "win32":
         timer = time.clock
     else:
@@ -46,6 +48,7 @@ DEV_PID = 80001
 ASR_URL = 'https://vop.baidu.com/pro_api'
 SCOPE = 'brain_enhanced_asr'  # 有此scope表示有收费极速版能力，没有请在网页里开通极速版
 
+
 # 忽略scope检查，非常旧的应用可能没有
 # SCOPE = False
 
@@ -63,8 +66,7 @@ def fetch_token():
               'client_id': API_KEY,
               'client_secret': SECRET_KEY}
     post_data = urlencode(params)
-    if (IS_PY3):
-        post_data = post_data.encode( 'utf-8')
+    post_data = post_data.encode('utf-8')
     req = Request(TOKEN_URL, post_data)
     try:
         f = urlopen(req)
@@ -72,20 +74,18 @@ def fetch_token():
     except URLError as err:
         print('token http response http code : ' + str(err.code))
         result_str = err.read()
-    if (IS_PY3):
-        result_str =  result_str.decode()
+    result_str = result_str.decode()
 
-    print(result_str)
     result = json.loads(result_str)
-    print(result)
-    if ('access_token' in result.keys() and 'scope' in result.keys()):
+    if 'access_token' in result.keys() and 'scope' in result.keys():
         print(SCOPE)
-        if SCOPE and (not SCOPE in result['scope'].split(' ')):  # SCOPE = False 忽略检查
+        if SCOPE and (SCOPE not in result['scope'].split(' ')):  # SCOPE = False 忽略检查
             raise DemoError('scope is not correct')
         print('SUCCESS WITH TOKEN: %s  EXPIRES IN SECONDS: %s' % (result['access_token'], result['expires_in']))
         return result['access_token']
     else:
         raise DemoError('MAYBE API_KEY or SECRET_KEY not correct: access_token or scope not found in token response')
+
 
 """  TOKEN end """
 
@@ -97,7 +97,7 @@ def fetch_stt_baidu(audio_file):
 
     length = len(speech_data)
     if length == 0:
-        raise DemoError('file %s length read 0 bytes' % AUDIO_FILE)
+        raise DemoError('file %s length read 0 bytes' % audio_file)
     speech = base64.b64encode(speech_data)
     speech = str(speech, 'utf-8')
     params = {'dev_pid': DEV_PID,
