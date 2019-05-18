@@ -14,7 +14,8 @@ from flask_restful import reqparse
 from flask_restful import Api, Resource
 from audio_serve.baidu import fetch_stt_chinese_baidu
 from audio_serve.baidu import fetch_stt_english_baidu
-from audio_serve.kdxf import fetch_stt_kdxf
+from audio_serve.kdxf import fetch_stt_chinese_kdxf
+from audio_serve.kdxf import fetch_stt_english_kdxf
 
 
 app = Flask(__name__)
@@ -55,7 +56,12 @@ class Audio2Text(Resource):
                 raise ValueError('language is not recognized')
 
         elif vendor == 'kdxf':
-            res = fetch_stt_kdxf('t.pcm')['data']
+            if language == 'chinese':
+                res = fetch_stt_chinese_kdxf('t.pcm')['data']
+            elif language == 'english':
+                res = fetch_stt_english_kdxf('t.pcm')['data']
+            else:
+                raise ValueError('language is not recognized')
         else:
             raise ValueError('vendor is no recognized')
         return make_response(jsonify(dict(code=1, message="speech to sentence succeeded", data={'query': res})), 200)
