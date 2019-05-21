@@ -16,6 +16,7 @@ from audio_serve.baidu import fetch_stt_chinese_baidu
 from audio_serve.baidu import fetch_stt_english_baidu
 from audio_serve.kdxf import fetch_stt_chinese_kdxf
 from audio_serve.kdxf import fetch_stt_english_kdxf
+from audio_serve.utilities import calibrate_products
 
 
 app = Flask(__name__)
@@ -38,8 +39,8 @@ class Audio2Text(Resource):
         parser.add_argument('vendor', type=str, help='vendor of stt', default='baidu')
         parser.add_argument('language', type=str, help='language to stt', default='chinese')
         args = parser.parse_args()
-        vendor = args['vendor']
-        language = args['language']
+        vendor = args['vendor'].lower()
+        language = args['language'].lower()
 
         data = request.files['mp3']
         data.save('t.mp3')
@@ -64,6 +65,8 @@ class Audio2Text(Resource):
                 raise ValueError('language is not recognized')
         else:
             raise ValueError('vendor is no recognized')
+
+        res = calibrate_products(res, language)
         return make_response(jsonify(dict(code=1, message="speech to sentence succeeded", data={'query': res})), 200)
 
 
