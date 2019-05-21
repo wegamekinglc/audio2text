@@ -54,5 +54,5 @@ def calibrate_products(q, language):
 
     if match_products:
         word = match_products[0]
-        q = re.sub(word, w_key.lower(), q, flags=re.IGNORECASE)
+        q = re.sub(word, w_key, q, flags=re.IGNORECASE)
     return q
