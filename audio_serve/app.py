@@ -49,24 +49,24 @@ class Audio2Text(Resource):
         ffmpeg.run(stream, overwrite_output=True)
 
         if vendor == 'baidu':
-            if language == 'chinese':
+            if language in ('chinese', 'cn'):
                 res = fetch_stt_chinese_baidu('t.pcm')['result'][0]
-            elif language == 'english':
+            elif language in ('english', 'en'):
                 res = fetch_stt_english_baidu('t.pcm')['result'][0]
             else:
                 raise ValueError('language is not recognized')
 
         elif vendor == 'kdxf':
-            if language == 'chinese':
+            if language in ('chinese', 'cn'):
                 res = fetch_stt_chinese_kdxf('t.pcm')['data']
-            elif language == 'english':
+            elif language in ('english', 'en'):
                 res = fetch_stt_english_kdxf('t.pcm')['data']
             else:
                 raise ValueError('language is not recognized')
         else:
             raise ValueError('vendor is no recognized')
 
-        res = calibrate_products(res, language)
+        res = calibrate_products(res, language).strip('.|。|')
         return make_response(jsonify(dict(code=1, message="speech to sentence succeeded", data={'query': res})), 200)
 
 
