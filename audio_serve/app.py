@@ -5,6 +5,10 @@ Created on 2019-5-13
 @author: cheng.li
 """
 
+
+import os
+from tempfile import gettempdir
+import uuid
 import ffmpeg
 from flask import Flask
 from flask import request
@@ -42,25 +46,27 @@ class Audio2Text(Resource):
         vendor = args['vendor'].lower()
         language = args['language'].lower()
 
+        infile_name = os.path.join(gettempdir(), str(uuid.uuid4()) + '.mp3')
+        outfile_name = os.path.join(gettempdir(), str(uuid.uuid4()) + '.pcm')
         data = request.files['mp3']
-        data.save('t.mp3')
-        stream = ffmpeg.input('t.mp3')
-        stream = ffmpeg.output(stream, 't.pcm', acodec='pcm_s16le', f='s16le', ac=1, ar=16000)
+        data.save(infile_name)
+        stream = ffmpeg.input(infile_name)
+        stream = ffmpeg.output(stream, outfile_name, acodec='pcm_s16le', f='s16le', ac=1, ar=16000)
         ffmpeg.run(stream, overwrite_output=True)
 
         if vendor == 'baidu':
             if language in ('chinese', 'cn'):
-                res = fetch_stt_chinese_baidu('t.pcm')['result'][0]
+                res = fetch_stt_chinese_baidu(outfile_name)['result'][0]
             elif language in ('english', 'en'):
-                res = fetch_stt_english_baidu('t.pcm')['result'][0]
+                res = fetch_stt_english_baidu(outfile_name)['result'][0]
             else:
                 raise ValueError('language is not recognized')
 
         elif vendor == 'kdxf':
             if language in ('chinese', 'cn'):
-                res = fetch_stt_chinese_kdxf('t.pcm')['data']
+                res = fetch_stt_chinese_kdxf(outfile_name)['data']
             elif language in ('english', 'en'):
-                res = fetch_stt_english_kdxf('t.pcm')['data']
+                res = fetch_stt_english_kdxf(outfile_name)['data']
             else:
                 raise ValueError('language is not recognized')
         else:
