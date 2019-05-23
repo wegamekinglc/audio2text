@@ -41,30 +41,14 @@ class DemoError(Exception):
 TOKEN_URL = 'http://openapi.baidu.com/oauth/2.0/token'
 
 
-def fetch_token(scope):
+def fetch_token():
     params = {'grant_type': 'client_credentials',
               'client_id': API_KEY,
               'client_secret': SECRET_KEY}
-    post_data = urlencode(params)
-    post_data = post_data.encode('utf-8')
-    req = Request(TOKEN_URL, post_data)
-    try:
-        f = urlopen(req)
-        result_str = f.read()
-    except URLError as err:
-        print('token http response http code : ' + str(err.code))
-        result_str = err.read()
-    result_str = result_str.decode()
 
-    result = json.loads(result_str)
-    if 'access_token' in result.keys() and 'scope' in result.keys():
-        print(scope)
-        if scope and (scope not in result['scope'].split(' ')):  # SCOPE = False 忽略检查
-            raise DemoError('scope is not correct')
-        print('SUCCESS WITH TOKEN: %s  EXPIRES IN SECONDS: %s' % (result['access_token'], result['expires_in']))
-        return result['access_token']
-    else:
-        raise DemoError('MAYBE API_KEY or SECRET_KEY not correct: access_token or scope not found in token response')
+    resp = requests.post(TOKEN_URL, data=params)
+    result = resp.json()
+    return result['access_token']
 
 
 """  TOKEN end """
@@ -73,9 +57,8 @@ def fetch_token(scope):
 def fetch_stt_chinese_baidu(audio_file):
     dev_pid = 80001
     asr_url = 'https://vop.baidu.com/pro_api'
-    scope = 'brain_enhanced_asr'
 
-    token = fetch_token(scope)
+    token = fetch_token()
     with open(audio_file, 'rb') as speech_file:
         speech_data = speech_file.read()
 
@@ -101,9 +84,8 @@ def fetch_stt_chinese_baidu(audio_file):
 def fetch_stt_english_baidu(audio_file):
     dev_pid = 1737
     asr_url = 'http://vop.baidu.com/server_api'
-    scope = 'audio_voice_assistant_get'
 
-    token = fetch_token(scope)
+    token = fetch_token()
     with open(audio_file, 'rb') as speech_file:
         speech_data = speech_file.read()
 
