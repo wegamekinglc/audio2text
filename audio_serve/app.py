@@ -31,8 +31,13 @@ api = Api(app)
 class AudioUpload(Resource):
 
     def post(self):
+        infile_name = os.path.join(gettempdir(), str(uuid.uuid4()) + '.mp3')
+        outfile_name = os.path.join(gettempdir(), str(uuid.uuid4()) + '.pcm')
         data = request.files['mp3']
-        data.save('t.mp3')
+        data.save(infile_name)
+        stream = ffmpeg.input(infile_name)
+        stream = ffmpeg.output(stream, outfile_name, acodec='pcm_s16le', f='s16le', ac=1, ar=16000)
+        ffmpeg.run(stream, overwrite_output=True)
         return make_response(jsonify(dict(code=1, message="file upload succeeded", data=None)), 200)
 
 
