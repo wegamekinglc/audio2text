@@ -1,17 +1,15 @@
 # coding=utf-8
 
-import json
 import base64
-
+import random
 import requests
-from urllib.request import urlopen
-from urllib.request import Request
-from urllib.error import URLError
-from urllib.parse import urlencode
 
 
-API_KEY = 'zyZAIS9gQck9xycaGLHGkins'
-SECRET_KEY = '7Q9rSvApvoAGtMzjUFQetxFBwokSy0Nt'
+API_SETTINGS = [
+    dict(API_KEY='zyZAIS9gQck9xycaGLHGkins', SECRET_KEY='7Q9rSvApvoAGtMzjUFQetxFBwokSy0Nt'),
+    dict(API_KEY='whVEYPaFDe0WgoRYEort9U6M', SECRET_KEY='9PdrEiVMbM0TLeWYoPFb3K3nRmMvEWTq')
+]
+
 FORMAT = 'pcm'  # 文件后缀只支持 pcm/wav/amr
 CUID = '123456PYTHON'
 RATE = 16000  # 固定值
@@ -42,9 +40,11 @@ TOKEN_URL = 'http://openapi.baidu.com/oauth/2.0/token'
 
 
 def fetch_token():
+    n = random.randint(0, len(API_SETTINGS) - 1)
+    print(n)
     params = {'grant_type': 'client_credentials',
-              'client_id': API_KEY,
-              'client_secret': SECRET_KEY}
+              'client_id': API_SETTINGS[n]['API_KEY'],
+              'client_secret': API_SETTINGS[n]['SECRET_KEY']}
 
     resp = requests.post(TOKEN_URL, data=params)
     result = resp.json()
