@@ -11,8 +11,10 @@ API_SETTINGS = [
 ]
 
 FORMAT = 'pcm'  # 文件后缀只支持 pcm/wav/amr
-CUID = '123456PYTHON'
 RATE = 16000  # 固定值
+
+tokens = ['24.716add3a0b3fde4702f515e531f18c66.2592000.1561183396.282335-16323950',
+          '24.126656c41f6baa57725799e4a7abf0d9.2592000.1561183399.282335-16232520']
 
 # 免费版
 
@@ -58,7 +60,8 @@ def fetch_stt_chinese_baidu(audio_file):
     dev_pid = 80001
     asr_url = 'https://vop.baidu.com/pro_api'
 
-    token = fetch_token()
+    n = random.randint(0, len(tokens) - 1)
+    token = tokens[n]
     with open(audio_file, 'rb') as speech_file:
         speech_data = speech_file.read()
 
@@ -71,7 +74,7 @@ def fetch_stt_chinese_baidu(audio_file):
               'format': FORMAT,
               'rate': RATE,
               'token': token,
-              'cuid': CUID,
+              'cuid': "sunmi_" + str(n),
               'channel': 1,
               'speech': speech,
               'len': length
@@ -85,7 +88,8 @@ def fetch_stt_english_baidu(audio_file):
     dev_pid = 1737
     asr_url = 'http://vop.baidu.com/server_api'
 
-    token = fetch_token()
+    n = random.randint(0, len(tokens) - 1)
+    token = tokens[n]
     with open(audio_file, 'rb') as speech_file:
         speech_data = speech_file.read()
 
@@ -98,7 +102,7 @@ def fetch_stt_english_baidu(audio_file):
               'format': FORMAT,
               'rate': RATE,
               'token': token,
-              'cuid': CUID,
+              'cuid': "sunmi_" + str(n),
               'channel': 1,
               'speech': speech,
               'len': length
