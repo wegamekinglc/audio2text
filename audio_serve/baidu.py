@@ -7,14 +7,16 @@ import requests
 
 API_SETTINGS = [
     dict(API_KEY='zyZAIS9gQck9xycaGLHGkins', SECRET_KEY='7Q9rSvApvoAGtMzjUFQetxFBwokSy0Nt'),
-    dict(API_KEY='whVEYPaFDe0WgoRYEort9U6M', SECRET_KEY='9PdrEiVMbM0TLeWYoPFb3K3nRmMvEWTq')
+    dict(API_KEY='whVEYPaFDe0WgoRYEort9U6M', SECRET_KEY='9PdrEiVMbM0TLeWYoPFb3K3nRmMvEWTq'),
+    dict(API_KEY='7cOfriRPD4W9ueH111KGHkyf', SECRET_KEY='43LD6caUnm08zssRxVElGw6deCiBKy4Y')
 ]
 
 FORMAT = 'pcm'  # 文件后缀只支持 pcm/wav/amr
 RATE = 16000  # 固定值
 
-tokens = ['24.716add3a0b3fde4702f515e531f18c66.2592000.1561183396.282335-16323950',
-          '24.126656c41f6baa57725799e4a7abf0d9.2592000.1561183399.282335-16232520']
+tokens = ['24.759027c2fc63c21b3d8b357acb77ab44.2592000.1561188848.282335-16232520',
+          '24.6728085aa0a8667fab5993ac1d5c793e.2592000.1561188849.282335-16323950',
+          '24.b7e4209835972e63f245a4395c7bd550.2592000.1561188849.282335-15178355']
 
 # 免费版
 
@@ -41,9 +43,7 @@ class DemoError(Exception):
 TOKEN_URL = 'http://openapi.baidu.com/oauth/2.0/token'
 
 
-def fetch_token():
-    n = random.randint(0, len(API_SETTINGS) - 1)
-    print(n)
+def fetch_token(n):
     params = {'grant_type': 'client_credentials',
               'client_id': API_SETTINGS[n]['API_KEY'],
               'client_secret': API_SETTINGS[n]['SECRET_KEY']}
@@ -113,4 +113,5 @@ def fetch_stt_english_baidu(audio_file):
 
 
 if __name__ == '__main__':
-    pass
+    for i in range(3):
+        print(fetch_token(i))
