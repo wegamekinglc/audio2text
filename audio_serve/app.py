@@ -78,6 +78,7 @@ class Audio2Text(Resource):
             raise ValueError('vendor is no recognized')
 
         res = calibrate_products(res, language).strip('.|。|')
+        print("Text: {0}".format(res))
         return make_response(jsonify(dict(code=1, message="speech to sentence succeeded", data={'query': res})), 200)
 
 
