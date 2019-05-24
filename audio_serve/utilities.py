@@ -33,6 +33,29 @@ CHINESE_WORDS_MAPPING = [
 
 
 ENGLISH_WORDS_MAPPING = [
+    {"Handheld Scanner": ["ham house scanner", "hen house gammer", "hand how sanner"]},
+    {"POS Power Bank": ["posed Power Back", "posed Power Bank", "post Power Back", "post Power Bank", "power back,power bank"]},
+    {"Dragonfly": ["dragon fly"]},
+    {"P2 Lite": ["pictrue light", "p too light", "p two light", "p to light"]},
+    {"T2 Mini": ["T two mini", "to me ni", "meaning,mini"]},
+    {"T2 Lite":["t too light", "t to light", "too light", "to light"]},
+    {"P2 Pro": ["p two pro", "p too pro", "peter pro", "p to pro"]},
+    {"V2 Pro": ["v true pro", "v too pro", "v two pro", "v to pro"]},
+    {"Blink": ["blank,link"]},
+    {"L2K": ["l two k", "l too k", "l to k"]},
+    {"V1S":["v one s"]},
+    {"ESL":["e s l", "e xl"]},
+    {"M2": ["am too", "am two", "am to", "m too", "m two", "m to"]},
+    {"P1": ["p one"]},
+    {"D2": ["the too", "the two"]},
+    {"L2": ["air too", "air two", "el too", "el two", "air to", "el to", "l too", "l two", "l to"]},
+    {"S2": ["ass too", "as too", "ask to", "ass to", "us to", "s two", "as to", "s too", "s to"]},
+    {"T2": ["t too", "t to"]},
+    {"K1": ["ok one", "K one"]},
+    {"H1": ["H one"]},
+    {"V2": ["v too", "v two", "vito", "v tu", "v to"]},
+    {"W1": ["w one"]},
+    {"SUNMI Link": ["sammy link"]},
     {"you": ["your"]}
 ]
 
