@@ -62,7 +62,7 @@ ENGLISH_WORDS_MAPPING = [
 
 def calibrate_products(q, language):
 
-    if language == 'cn' or language == 'chinese':
+    if language in ('cn', 'chinese'):
         words_mapping = CHINESE_WORDS_MAPPING
     else:
         words_mapping = ENGLISH_WORDS_MAPPING
