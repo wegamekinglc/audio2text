@@ -63,7 +63,7 @@ class Audio2Text(Resource):
             if language in ('chinese', 'cn'):
                 res = fetch_stt_chinese_baidu(outfile_name)['result'][0]
             elif language in ('english', 'en'):
-                res = fetch_stt_english_baidu(outfile_name)['result'][0]
+                res = fetch_stt_english_kdxf(outfile_name)['data']
             else:
                 raise ValueError('language is not recognized')
 
